@@ -1,5 +1,3 @@
-# from django.core.management.base import BaseCommand
-
 # class Command(BaseCommand):
 #     help = 'Say hello'
 
@@ -13,10 +11,10 @@ from apps.meterData_handler_app.services.file_parser import parse_d0010
 class Command(BaseCommand):
     help = 'Import D0010 flow file'
 
-    def add_arguments(self, parser):
+    def add_arguments(self, parser: BaseCommand) -> None:
         parser.add_argument('D0010file', nargs='+', type=str)
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **options: dict) -> None:
         try:
         
             for D0010_file_path in options['D0010file']:
@@ -45,9 +43,9 @@ class Command(BaseCommand):
                         file_name=reading['file_name'],
                     )
                 self.stdout.write(self.style.SUCCESS(f"Successfully imported {D0010_file_path}"))
-                
+
         except FileNotFoundError:
             self.stdout.write(self.style.ERROR(f"File not found: {D0010_file_path}"))
         except Exception as e:
-            self.stdout.write(self.style.ERROR(f"An error occurred: {str(e)}"))
+            self.stdout.write(self.style.ERROR(f"An unexpected error occurred: {str(e)}"))
 

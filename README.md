@@ -29,6 +29,12 @@ python3 manage.py createsuperuser
 ```
 python3 manage.py runserver
 ```
+
+Visit: http://localhost:8000/admin  # Login with your superuser credential
+
+
+
+## Test
 ```
-visit http://localhost:8000/admin
-```
+ python3 manage.py test    
+ ```
