@@ -134,3 +134,13 @@ class ImportD0010CommandTest(TestCase):
             call_command('import_d0010', str(self.file_path))
 
 
+    def test_unexpected_row_raises(self):
+        content = (
+            "026|1234567890123|V|\n"
+            "028|S123456789|C|\n"
+            "031|01|20240520000000|1234.5|||T|N|\n"  # Unexpected row type
+        )
+        self.file_path = self.create_temp_file(content)
+
+        with self.assertRaises(ValueError):
+            call_command('import_d0010', str(self.file_path))

@@ -85,6 +85,17 @@ class ParseD0010TestCase(TestCase):
         with self.assertRaises(ValueError):
             list(parse_d0010(str(self.file_path)))
 
+    def test_unexpected_row_type_raises(self):
+        content = (
+            "026|1234567890123|V|\n"
+            "028|S123456789|C|\n"
+            "031|01|20240520000000|1234.5|||T|N|\n"
+        )
+        self.file_path = self.create_temp_file(content)
+
+        with self.assertRaises(ValueError) as cm:
+            list(parse_d0010(str(self.file_path)))
+
 
 
 # Missing data test cases
@@ -99,6 +110,7 @@ class ParseD0010TestCase(TestCase):
         with self.assertRaises(ValueError) as cm:
             list(parse_d0010(str(self.file_path)))
 
+
     def test_missing_meter_serial_number_raises(self):
         content = (
             "026|1234567890123|V|\n"
@@ -110,6 +122,7 @@ class ParseD0010TestCase(TestCase):
         with self.assertRaises(ValueError) as cm:
             list(parse_d0010(str(self.file_path)))
     
+
     def test_missing_register_id_raises(self):
         content = (
             "026|1234567890123|V|\n"
@@ -120,6 +133,7 @@ class ParseD0010TestCase(TestCase):
 
         with self.assertRaises(ValueError):
             list(parse_d0010(str(self.file_path)))
+
 
     def test_missing_reading_date_raises(self):
         content = (
@@ -132,6 +146,7 @@ class ParseD0010TestCase(TestCase):
         with self.assertRaises(ValueError):
             list(parse_d0010(str(self.file_path)))
 
+
     def test_missing_reading_value_raises(self):
         content = (
             "026|1234567890123|V|\n"
@@ -142,6 +157,9 @@ class ParseD0010TestCase(TestCase):
 
         with self.assertRaises(ValueError):
             list(parse_d0010(str(self.file_path)))
+
+
+
     
   
         

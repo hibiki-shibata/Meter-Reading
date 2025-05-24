@@ -9,6 +9,8 @@ from typing import Generator
 logger = logging.getLogger(__name__)
 
 def parse_d0010(D0010_file_path) -> 'Generator[dict, None, None]':
+        ignored_lines = {"ZHV", "ZPT"} 
+
         
         with open(D0010_file_path, 'r') as file:
             reader = csv.reader(file, delimiter='|')
@@ -19,6 +21,9 @@ def parse_d0010(D0010_file_path) -> 'Generator[dict, None, None]':
             expect028: bool = False
 
             for row in reader:
+                if row[0] in ignored_lines:
+                    continue
+
                 if row[0] == '026':
                     current_mpan_core: str = row[1].strip()
                     expect028 = True
@@ -34,7 +39,7 @@ def parse_d0010(D0010_file_path) -> 'Generator[dict, None, None]':
                     register_id: str = row[1].strip()
                     reading_date: datetime = datetime.strptime(row[2].strip(), "%Y%m%d%H%M%S").date()
                     reading_value: float = float(row[3].strip())   
-                    
+
                     if not current_mpan_core or not current_meter_serial_number or not register_id or not reading_date or reading_value is None:                 
                        raise ValueError(f"Missing MPAN core or meter serial number in file {fileName} at line {reader.line_num}")
                     else:
@@ -48,3 +53,6 @@ def parse_d0010(D0010_file_path) -> 'Generator[dict, None, None]':
                           }
                         
                     expect028 = False
+
+                else:
+                    raise ValueError(f"Unexpected row type {row[0]} in file {fileName} at line {reader.line_num}")
