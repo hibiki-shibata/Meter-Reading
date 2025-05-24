@@ -1,5 +1,6 @@
-from django.contrib import admin
+# Doc: https://docs.djangoproject.com/en/5.2/ref/contrib/admin/#the-register-decorator
 
+from django.contrib import admin
 # # Register your models here.
 from .models.models import MeterReading
 
@@ -16,7 +17,3 @@ class MeterReadingAdmin(admin.ModelAdmin):
     search_fields = ("mpan_core", "meter_serial_number")
 
 
-# @admin.register(FlowFile)
-# class FlowFileAdmin(admin.ModelAdmin):
-#     list_display = ("file_name", "created_at")
-#     search_fields = ("file_name",)

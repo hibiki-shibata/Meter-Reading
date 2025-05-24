@@ -19,12 +19,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         for D0010_file_path in options['D0010file']:
             
-            # if FlowFile.objects.filter(file_name=filename).exists():
-            #     self.stdout.write(self.style.WARNING(f"{filename} already imported"))
-            #     continue
-
-            # flow_file = FlowFile.objects.create(file_name=filename)
-
            
             for reading in parse_d0010(D0010_file_path):
                 # Check if the reading already exists
@@ -35,11 +29,10 @@ class Command(BaseCommand):
                     reading_date=reading['reading_date'],
                     reading_value=reading['reading_value'],
                 ).exists():
-                    # self.stdout.write(self.style.WARNING(f"Reading already exists: {reading}"))
                     raise ValueError(f"Reading already exists: {reading}")            
 
-                # Create a new MeterReading object
             
+                # Create a new MeterReading object
                 MeterReading.objects.create(
                     mpan_core=reading['mpan_core'],
                     meter_serial_number=reading['meter_serial_number'],
@@ -50,17 +43,3 @@ class Command(BaseCommand):
                 )
             self.stdout.write(self.style.SUCCESS(f"Successfully imported {D0010_file_path}"))
 
-
-# class FlowFile(models.Model):
-#     file_name = models.CharField(max_length=100, unique=True)
-#     created_at = models.DateTimeField(auto_now_add=True)
-
-
-# # D0010 model: D0010 data doc => https://www.electralink.co.uk/data-catalogues/dtc-catalogue/
-# class MeterReading(models.Model):
-#     mpan_core = models.CharField(max_length=13)
-#     meter_serial_number = models.CharField(max_length=10)
-#     register_id = models.CharField(max_length=2)
-#     reading_date = models.DateField()
-#     meter_reading = models.DecimalField(max_digits=10, decimal_places=1)
-#     file_name = models.ForeignKey(FlowFile, on_delete=models.CASCADE)
