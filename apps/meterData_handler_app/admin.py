@@ -5,7 +5,7 @@ from .models.models import MeterReading, FlowFile
 
 @admin.register(MeterReading)
 class MeterReadingAdmin(admin.ModelAdmin):
-    list_display = ('mpan_core', 'meter_serial_number', 'reading_date', 'meter_reading', 'file_name')
+    list_display = ('mpan_core', 'meter_serial_number', 'reading_date', 'reading_value', 'file_name')
     search_fields = ('mpan_core', 'meter_serial_number')
 
 @admin.register(FlowFile)

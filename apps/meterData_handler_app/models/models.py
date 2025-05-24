@@ -11,7 +11,7 @@ class MeterReading(models.Model):
     meter_serial_number = models.CharField(max_length=10)
     register_id = models.CharField(max_length=2)
     reading_date = models.DateField()
-    meter_reading = models.DecimalField(max_digits=10, decimal_places=1)
+    reading_value = models.DecimalField(max_digits=10, decimal_places=1)
     file_name = models.ForeignKey(FlowFile, on_delete=models.CASCADE)
     
 
