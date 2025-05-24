@@ -46,6 +46,7 @@ class Command(BaseCommand):
 
         except FileNotFoundError:
             self.stdout.write(self.style.ERROR(f"File not found: {D0010_file_path}"))
+            raise FileNotFoundError
         except Exception as e:
             self.stdout.write(self.style.ERROR(f"An unexpected error occurred: {str(e)}"))
-
+            raise e

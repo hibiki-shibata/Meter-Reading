@@ -21,6 +21,9 @@ class ParseD0010TestCase(TestCase):
            print("No file to delete or file does not exist.")
 
 
+
+
+
 # Valid test cases
     def test_valid_d0010_file_parses_single_record(self):
         content = (

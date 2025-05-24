@@ -1,65 +1,136 @@
+from pathlib import Path
+from django.core.management import call_command
+from django.test import TestCase
+from apps.meterData_handler_app.models import MeterReading
+from datetime import date
 
 
-# import tempfile
-# import os
-# from unittest.mock import patch
-# from django.core.management import call_command
-# from django.test import TestCase
-# from apps.meterData_handler_app.models.models import MeterReading
+class ImportD0010CommandTest(TestCase):
 
-# class ImportD0010CommandTest(TestCase):
 
-#     def setUp(self):
-#         self.valid_data = [
-#             {
-#                 "mpan": "1234567890123",
-#                 "meter_serial_number": "S123456789",
-#                 "register_id": "01",
-#                 "reading_date": "2024-05-20",
-#                 "reading_value": 1234.5,
-#                 "file_name": "test_file.d0010",
-#             }
-#         ]
+    def create_temp_file(self, content: str) -> Path: # Create a temporary file with the given content.
+        file_path = Path("sampleFile.D0010").resolve() # Full Path
+        file_path.write_text(content)
+        return file_path
 
-#     @patch('apps.meterData_handler_app.management.commands.import_d0010.parse_d0010')
-#     def test_import_creates_readings(self, mock_parser):
-#         mock_parser.return_value = self.valid_data
+    def tearDown(self): 
+        if hasattr(self, "file_path") and self.file_path.exists():
+            self.file_path.unlink()
+            # print(f"File deleted: {self.file_path}")
+        else:
+            print("No file to delete or file does not exist.")
+   
 
-#         temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".d0010")
-#         temp_file.write(b"dummy data\n")
-#         temp_file.close()
 
-#         try:
-#             call_command('import_d0010', temp_file.name)
 
-#             # Assert data is saved
-#             self.assertEqual(MeterReading.objects.count(), 1)
-#             reading = MeterReading.objects.first()
-#             self.assertEqual(reading.mpan, self.valid_data[0]["mpan"])
-#             self.assertEqual(reading.meter_serial_number, self.valid_data[0]["meter_serial_number"])
+    def test_successful_import_creates_reading(self):
+        content = (
+            "026|1234567890123|V|\n"
+            "028|S123456789|C|\n"
+            "030|01|20240520000000|1234.5|||T|N|\n"
+        )
 
-#         finally:
-#             os.unlink(temp_file.name)
+        self.file_path = self.create_temp_file(content)
 
-#     @patch('apps.meterData_handler_app.management.commands.import_d0010.parse_d0010')
-#     def test_duplicate_reading_skipped(self, mock_parser):
-#         mock_parser.return_value = self.valid_data
 
-#         # First import
-#         call_command('import_d0010', 'fake_file_1.d0010')
-#         self.assertEqual(MeterReading.objects.count(), 1)
+        call_command('import_d0010', str(self.file_path))
+        reading = MeterReading.objects.first()
 
-#         # Second import — should skip duplicate
-#         call_command('import_d0010', 'fake_file_1.d0010')
-#         self.assertEqual(MeterReading.objects.count(), 1)
+        self.assertEqual(MeterReading.objects.count(), 1)
+        self.assertEqual(reading.mpan, '1234567890123')
+        self.assertEqual(reading.meter_serial_number, 'S123456789')
+        self.assertEqual(reading.register_id, '01')
+        self.assertEqual(reading.reading_date, date(2024, 5, 20))
+        self.assertEqual(reading.reading_value, 1234.5)
 
-#     def test_missing_file_gracefully_handled(self):
-#         result = self.capture_command_output('nonexistent_file.d0010')
-#         self.assertIn("File not found", result)
 
-#     def capture_command_output(self, file_path):
-#         """Helper to capture stdout from the command"""
-#         from io import StringIO
-#         out = StringIO()
-#         call_command('import_d0010', file_path, stdout=out)
-#         return out.getvalue()
+    def test_duplicate_reading_is_skipped(self):
+        content = (
+            "026|1234567890123|V|\n"
+            "028|S123456789|C|\n"
+            "030|01|20240520000000|1234.5|||T|N|\n"
+        )
+        
+        self.file_path = self.create_temp_file(content)
+
+        call_command('import_d0010', str(self.file_path))
+        call_command('import_d0010', str(self.file_path))
+
+        self.assertEqual(MeterReading.objects.count(), 1)
+        reading = MeterReading.objects.first()
+        self.assertEqual(reading.reading_value, 1234.5)
+
+
+
+# Error handling tests    
+    def test_file_not_found(self):
+        content = (
+            "026|1234567890123|V|\n"
+            "028|S123456789|C|\n"
+            "030|01|20240520000000|1234.5|||T|N|\n"
+        )
+        self.file_path = self.create_temp_file(content)
+
+        with self.assertRaises(FileNotFoundError):
+              call_command('import_d0010', "missing_file.D0010")
+
+
+    def test_parse_raises_missing_mpan_core(self):
+            content = (
+                "026||V|\n"
+                "028|S123456789|C|\n"
+                "030|01|20240520000000|1234.5|||T|N|\n"
+            )
+            self.file_path = self.create_temp_file(content)
+
+            with self.assertRaises(ValueError) as cm:
+                call_command('import_d0010', str(self.file_path))
+
+
+    def test_parse_raises_missing_meter_serial_number(self):
+        content = (
+            "026|1234567890123|V|\n"
+            "028||C|\n"
+            "030|01|20240520000000|1234.5|||T|N|\n"
+        )
+        self.file_path = self.create_temp_file(content)
+
+        with self.assertRaises(ValueError) as cm:
+            call_command('import_d0010', str(self.file_path))
+
+
+    def test_parse_raises_missing_register_id(self):
+        content = (
+            "026|1234567890123|V|\n"
+            "028|S123456789|C|\n"
+            "030||20240520000000|1234.5|||T|N|\n"
+        )
+        self.file_path = self.create_temp_file(content)
+
+        with self.assertRaises(ValueError):
+            call_command('import_d0010', str(self.file_path))
+
+    def test_parse_raises_missing_reading_date(self):
+        content = (
+            "026|1234567890123|V|\n"
+            "028|S123456789|C|\n"
+            "030|01||1234.5|||T|N|\n"
+        )
+        self.file_path = self.create_temp_file(content)
+
+        with self.assertRaises(ValueError):
+            call_command('import_d0010', str(self.file_path))
+
+
+    def test_parse_raises_missing_reading_value(self):
+        content = (
+            "026|1234567890123|V|\n"
+            "028|S123456789|C|\n"
+            "030|01|20240520000000|||T|N|\n"
+        )
+        self.file_path = self.create_temp_file(content)
+
+        with self.assertRaises(ValueError):
+            call_command('import_d0010', str(self.file_path))
+
+
