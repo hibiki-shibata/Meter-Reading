@@ -34,7 +34,7 @@ def parse_d0010(D0010_file_path):
                     reading_date = datetime.strptime(row[2].strip(), "%Y%m%d%H%M%S").date()
                     reading_value = float(row[3].strip())                    
                     yield {
-                            'mpan_core': current_mpan_core,
+                            'mpan': current_mpan_core,
                             'meter_serial_number': current_meter_serial_number,
                             'register_id': register_id,
                             'reading_date': reading_date,

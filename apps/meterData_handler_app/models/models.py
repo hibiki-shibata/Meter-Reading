@@ -3,7 +3,7 @@ from django.db import models
 
 # D0010 model: D0010 data doc => https://www.electralink.co.uk/data-catalogues/dtc-catalogue/
 class MeterReading(models.Model):
-    mpan_core = models.CharField(max_length=13)
+    mpan = models.CharField(max_length=13)
     meter_serial_number = models.CharField(max_length=10)
     register_id = models.CharField(max_length=2)
     reading_date = models.DateField()

@@ -24,7 +24,7 @@ class Command(BaseCommand):
                 for reading in parse_d0010(D0010_file_path):
                     # Check if the reading already exists
                     if MeterReading.objects.filter(
-                        mpan_core=reading['mpan_core'],
+                        mpan=reading['mpan'],
                         meter_serial_number=reading['meter_serial_number'],
                         register_id=reading['register_id'],
                         reading_date=reading['reading_date'],
@@ -37,7 +37,7 @@ class Command(BaseCommand):
                 
                     # Create a new MeterReading object
                     MeterReading.objects.create(
-                        mpan_core=reading['mpan_core'],
+                        mpan=reading['mpan'],
                         meter_serial_number=reading['meter_serial_number'],
                         register_id=reading['register_id'],
                         reading_date=reading['reading_date'],
