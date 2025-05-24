@@ -17,29 +17,36 @@ class Command(BaseCommand):
         parser.add_argument('D0010file', nargs='+', type=str)
 
     def handle(self, *args, **options):
-        for D0010_file_path in options['D0010file']:
+        try:
+        
+            for D0010_file_path in options['D0010file']:
             
-           
-            for reading in parse_d0010(D0010_file_path):
-                # Check if the reading already exists
-                if MeterReading.objects.filter(
-                    mpan_core=reading['mpan_core'],
-                    meter_serial_number=reading['meter_serial_number'],
-                    register_id=reading['register_id'],
-                    reading_date=reading['reading_date'],
-                    reading_value=reading['reading_value'],
-                ).exists():
-                    raise ValueError(f"Reading already exists: {reading}")            
+                for reading in parse_d0010(D0010_file_path):
+                    # Check if the reading already exists
+                    if MeterReading.objects.filter(
+                        mpan_core=reading['mpan_core'],
+                        meter_serial_number=reading['meter_serial_number'],
+                        register_id=reading['register_id'],
+                        reading_date=reading['reading_date'],
+                        reading_value=reading['reading_value'],
+                    ).exists():
+                        # raise ValueError(f"Reading already exists: {reading}")
+                        self.stdout.write(self.style.WARNING(f"Reading already exists: {reading}"))  
+                        continue  
 
-            
-                # Create a new MeterReading object
-                MeterReading.objects.create(
-                    mpan_core=reading['mpan_core'],
-                    meter_serial_number=reading['meter_serial_number'],
-                    register_id=reading['register_id'],
-                    reading_date=reading['reading_date'],
-                    reading_value=reading['reading_value'],
-                    file_name=reading['file_name'],
-                )
-            self.stdout.write(self.style.SUCCESS(f"Successfully imported {D0010_file_path}"))
+                
+                    # Create a new MeterReading object
+                    MeterReading.objects.create(
+                        mpan_core=reading['mpan_core'],
+                        meter_serial_number=reading['meter_serial_number'],
+                        register_id=reading['register_id'],
+                        reading_date=reading['reading_date'],
+                        reading_value=reading['reading_value'],
+                        file_name=reading['file_name'],
+                    )
+                self.stdout.write(self.style.SUCCESS(f"Successfully imported {D0010_file_path}"))
+        except FileNotFoundError:
+            self.stdout.write(self.style.ERROR(f"File not found: {D0010_file_path}"))
+        except Exception as e:
+            self.stdout.write(self.style.ERROR(f"An error occurred: {str(e)}"))
 
