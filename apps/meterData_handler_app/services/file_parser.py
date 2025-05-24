@@ -27,7 +27,7 @@ def parse_d0010(D0010_file_path):
                         current_meter_serial_number = row[1].strip()
                         expect028 = False
                     else:
-                         logger.warning(f"Unexpected row 028 without preceding 026 in file {fileName} at line {reader.line_num}")
+                         raise ValueError(f"Unexpected row 028 without preceding 026 in file {fileName} at line {reader.line_num}")
                         
                 elif row[0] == '030':
                     register_id = row[1].strip()

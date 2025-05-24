@@ -45,6 +45,7 @@ class Command(BaseCommand):
                         file_name=reading['file_name'],
                     )
                 self.stdout.write(self.style.SUCCESS(f"Successfully imported {D0010_file_path}"))
+                
         except FileNotFoundError:
             self.stdout.write(self.style.ERROR(f"File not found: {D0010_file_path}"))
         except Exception as e:
