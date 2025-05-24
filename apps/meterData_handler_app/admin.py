@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # # Register your models here.
-from .models.models import MeterReading, FlowFile
+from .models.models import MeterReading
 
 
 @admin.register(MeterReading)

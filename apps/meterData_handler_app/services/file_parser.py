@@ -7,11 +7,13 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-def parse_d0010(file_path):
+def parse_d0010(D0010_file_path):
     try:
 
-        with open(file_path, 'r') as file:
+        with open(D0010_file_path, 'r') as file:
             reader = csv.reader(file, delimiter='|')
+            
+            fileName = D0010_file_path.split('/')[-1]
 
             current_mpan_core = None
             current_meter_serial_number = None
@@ -30,8 +32,9 @@ def parse_d0010(file_path):
                             'meter_serial_number': current_meter_serial_number,
                             'register_id': register_id,
                             'reading_date': reading_date,
-                            'reading_value': reading_value
+                            'reading_value': reading_value,
+                            'file_name': fileName,
                         }
 
     except FileNotFoundError:
-        raise FileNotFoundError(f"File not found: {file_path}")
+        raise FileNotFoundError(f"File not found: {D0010_file_path}")

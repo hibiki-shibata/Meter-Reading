@@ -1,1 +1,1 @@
-from .models import MeterReading, FlowFile
+from .models import MeterReading

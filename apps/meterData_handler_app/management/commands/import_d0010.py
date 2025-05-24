@@ -7,7 +7,7 @@
 #         self.stdout.write("Hello, world!")
 
 from django.core.management.base import BaseCommand
-from apps.meterData_handler_app.models.models import FlowFile, MeterReading
+from apps.meterData_handler_app.models.models import MeterReading
 from apps.meterData_handler_app.services.file_parser import parse_d0010
 
 class Command(BaseCommand):
@@ -18,13 +18,12 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         for D0010_file_path in options['D0010file']:
-            filename = D0010_file_path.split('/')[-1]
             
-            if FlowFile.objects.filter(file_name=filename).exists():
-                self.stdout.write(self.style.WARNING(f"{filename} already imported"))
-                continue
+            # if FlowFile.objects.filter(file_name=filename).exists():
+            #     self.stdout.write(self.style.WARNING(f"{filename} already imported"))
+            #     continue
 
-            flow_file = FlowFile.objects.create(file_name=filename)
+            # flow_file = FlowFile.objects.create(file_name=filename)
 
            
             for reading in parse_d0010(D0010_file_path):
@@ -36,8 +35,8 @@ class Command(BaseCommand):
                     reading_date=reading['reading_date'],
                     reading_value=reading['reading_value'],
                 ).exists():
-                    self.stdout.write(self.style.WARNING(f"Reading already exists: {reading}"))
-                    continue
+                    # self.stdout.write(self.style.WARNING(f"Reading already exists: {reading}"))
+                    raise ValueError(f"Reading already exists: {reading}")            
 
                 # Create a new MeterReading object
             
@@ -47,9 +46,9 @@ class Command(BaseCommand):
                     register_id=reading['register_id'],
                     reading_date=reading['reading_date'],
                     reading_value=reading['reading_value'],
-                    file_name=flow_file,
+                    file_name=reading['file_name'],
                 )
-            self.stdout.write(self.style.SUCCESS(f"Imported {filename}"))
+            self.stdout.write(self.style.SUCCESS(f"Successfully imported {D0010_file_path}"))
 
 
 # class FlowFile(models.Model):
