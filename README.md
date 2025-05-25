@@ -27,6 +27,7 @@ docker run -p 5432:5432 -d \
 
 ### 2. ⚙️ Set Up Django Project (Recommended Python ver: 3.13.3)
 
+~ Run these commands under KrakenProject/ directories ~
 
 (Optional: Recommended)
 ```
