@@ -25,13 +25,19 @@ docker run -p 5432:5432 -d \
 ```
 
 
-### 2. ⚙️ Set Up Django Project
+### 2. ⚙️ Set Up Django Project (Recommended Python ver: 3.13.3)
 
 
-In ~KrakenProject/ 
+(Optional: Recommended)
+```
+python3 -m venv venv
+```
+
+```
+source ./venv/bin/activate
+```
+
 Install required dependencies:
-(Use venv depending on your environment)
-
 ```
 pip3 install -r requirements.txt
 ```
@@ -49,7 +55,6 @@ python3 manage.py migrate
 
 ### 3. 📥 Import example D0010 Data File into the DB
 
-In ~KrakenProject/
 ```
 python3 manage.py import_d0010 sample_files/sample.D0010  
 ```
@@ -58,7 +63,6 @@ python3 manage.py import_d0010 sample_files/sample.D0010
 
 ### 4. 🔐 Access the Admin Panel
 
-In ~KrakenProject/
 Create a superuser account:
 
 ```
@@ -76,11 +80,11 @@ Open your browser and go to:
 ```
 http://localhost:8000/admin 
 ```
+Log in with your superuser credential !
+
 
 
 ## 5. ✅ Run Tests
-
-In ~KrakenProject/
 
 ```
 python3 manage.py test    
