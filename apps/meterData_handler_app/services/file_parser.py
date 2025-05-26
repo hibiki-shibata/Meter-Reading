@@ -18,30 +18,46 @@ def parse_d0010(D0010_file_path) -> 'Generator[dict, None, None]':
             fileName: str = D0010_file_path.split('/')[-1] 
             current_mpan_core: str = None
             current_meter_serial_number: str = None
+
+            expect026: bool = True
             expect028: bool = False
+            expect030: bool = False
 
             for row in reader:
                 if row[0] in ignored_lines:
                     continue
 
                 if row[0] == '026':
+                    if not expect026:
+                        raise ValueError(f"Unexpected row 026 without preceding 028 in file {fileName} at line {reader.line_num}")
+                    
                     current_mpan_core: str = row[1].strip()
+                    expect026 = False
                     expect028 = True
+                    expect030 = False
+              
 
                 elif row[0] == '028':
-                    if expect028:
-                        current_meter_serial_number: str = row[1].strip()
-                        expect028 = False
-                    else:
-                         raise ValueError(f"Unexpected row 028 without preceding 026 in file {fileName} at line {reader.line_num}")
+                    if not expect028:
+                        raise ValueError(f"Unexpected row 028 without preceding 026 in file {fileName} at line {reader.line_num}")
+                    
+                    current_meter_serial_number: str = row[1].strip()
+                    expect026 = False
+                    expect028 = False
+                    expect030 = True
+                                 
                         
                 elif row[0] == '030':
+                    if not expect030:
+                        raise ValueError(f"Unexpected row 030 without preceding 026 or 028 in file {fileName} at line {reader.line_num}")
+                    
                     register_id: str = row[1].strip()
                     reading_date: datetime = datetime.strptime(row[2].strip(), "%Y%m%d%H%M%S").date()
                     reading_value: float = float(row[3].strip())   
 
                     if not current_mpan_core or not current_meter_serial_number or not register_id or not reading_date or reading_value is None:                 
                        raise ValueError(f"Missing MPAN core or meter serial number in file {fileName} at line {reader.line_num}")
+                    
                     else:
                         yield {
                                 'mpan': current_mpan_core,
@@ -52,7 +68,18 @@ def parse_d0010(D0010_file_path) -> 'Generator[dict, None, None]':
                                 'file_name': fileName,
                           }
                         
+                    expect026 = True
                     expect028 = False
+                    expect030 = True
 
                 else:
                     raise ValueError(f"Unexpected row type {row[0]} in file {fileName} at line {reader.line_num}")
+                
+
+              
+            
+                # 028 > 
+                # 030 >
+                # 026 > 030
+                # 026 > 028 > 026 
+                # 026 > 028 > 030 > 028
