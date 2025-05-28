@@ -5,14 +5,25 @@ import csv
 from datetime import datetime
 import logging
 from typing import Generator
+from dataclasses import dataclass
 
 logger = logging.getLogger(__name__)
 
+@dataclass
+class MeterReadingData:
+    mpan: str
+    meter_serial_number: str
+    register_id: str
+    reading_date: datetime
+    reading_value: float
+    file_name: str
+
+
 def parse_d0010(D0010_file_path) -> 'Generator[dict, None, None]':
-        ignored_lines = {"ZHV", "ZPT"} 
+        ignored_lines: set = {"ZHV", "ZPT"} 
 
         
-        with open(D0010_file_path, 'r') as file:
+        with open(D0010_file_path, 'r', newline='' ) as file:
             reader = csv.reader(file, delimiter='|')
             
             fileName: str = D0010_file_path.split('/')[-1] 
@@ -59,14 +70,15 @@ def parse_d0010(D0010_file_path) -> 'Generator[dict, None, None]':
                        raise ValueError(f"Missing MPAN core or meter serial number in file {fileName} at line {reader.line_num}")
                     
                     else:
-                        yield {
-                                'mpan': current_mpan_core,
-                                'meter_serial_number': current_meter_serial_number,
-                                'register_id': register_id,
-                                'reading_date': reading_date,
-                                'reading_value': reading_value,
-                                'file_name': fileName,
-                          }
+                        yield  MeterReadingData (
+                            mpan=current_mpan_core,
+                            meter_serial_number=current_meter_serial_number,
+                            register_id=register_id,
+                            reading_date=reading_date,
+                            reading_value=reading_value,
+                            file_name=fileName
+                                
+                        )
                         
                     expect026 = True
                     expect028 = False
@@ -76,10 +88,6 @@ def parse_d0010(D0010_file_path) -> 'Generator[dict, None, None]':
                     raise ValueError(f"Unexpected row type {row[0]} in file {fileName} at line {reader.line_num}")
                 
 
-              
-            
-                # 028 > 
-                # 030 >
-                # 026 > 030
-                # 026 > 028 > 026 
-                # 026 > 028 > 030 > 028
+                
+                
+                
