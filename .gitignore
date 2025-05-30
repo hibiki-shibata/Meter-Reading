@@ -6,3 +6,4 @@ venv
 *.pot
 *.pyc
 .DS_Store
+test.js
