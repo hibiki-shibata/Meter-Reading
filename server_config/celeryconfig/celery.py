@@ -3,7 +3,7 @@ import os
 from celery import Celery
 
 # Celery config: https://docs.celeryq.dev/en/latest/django/first-steps-with-django.html
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'server_config.celeryconfig.settings') # This path shoudld be relative path from entry point
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'server_config.settings') # This path shoudld be relative path from entry point
 
 app = Celery('celeryconfig')
 

@@ -7,6 +7,8 @@ import logging
 from typing import Generator
 from dataclasses import dataclass
 
+from celery import shared_task
+
 logger = logging.getLogger(__name__)
 
 @dataclass

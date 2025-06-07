@@ -52,9 +52,22 @@ python3 manage.py makemigrations
 python3 manage.py migrate
 ```
 
+### 3. 🥦 Start Celery worker
+
+Start Redis
+'''
+ docker run --name krakenRedis -d \
+ -p 6379:6379 \
+ -v redisdata:/var/lib/redis/data \
+ redis
+'''
+
+'''
+celery -A server_config.celeryconfig worker --loglevel=info
+'''
 
 
-### 3. 📥 Import example D0010 Data File into the DB
+### 4. 📥 Import example D0010 Data File into the DB
 
 ```
 python3 manage.py import_d0010 sample_files/sample.D0010  
@@ -62,7 +75,7 @@ python3 manage.py import_d0010 sample_files/sample.D0010
 
 
 
-### 4. 🔐 Access the Admin Panel
+### 5. 🔐 Access the Admin Panel
 
 Create a superuser account:
 
@@ -85,7 +98,7 @@ Log in with your superuser credential !
 
 
 
-## 5. ✅ Run Tests
+## 6. ✅ Run Tests
 
 ```
 python3 manage.py test    
