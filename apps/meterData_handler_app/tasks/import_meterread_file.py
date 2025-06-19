@@ -6,7 +6,7 @@ from celery import shared_task
 reading: MeterReadingData
 
 
-@shared_task(bind=True, max_retries=3, default_retry_delay=5)
+@shared_task(bind=True, max_retries=3, default_retry_delay=5, retry_backoff=True)
 def import_meterread_file(self, D0010_file_path):
     try:        
 

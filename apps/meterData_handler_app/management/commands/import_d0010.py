@@ -15,7 +15,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser: BaseCommand) -> None:
         parser.add_argument('D0010file', nargs='+', type=str)
 
-    @shared_task(bind=True, autoretry_for=(Exception,), retry_backoff=True, max_retries=3)
+
     def handle(self, *args, **options: dict) -> None:
         try:
         
