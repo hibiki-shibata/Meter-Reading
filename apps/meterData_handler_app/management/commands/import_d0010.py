@@ -6,6 +6,7 @@
 
 from django.core.management.base import BaseCommand
 from apps.meterData_handler_app.tasks import import_meterread_file
+from celery import shared_task
 
 
 class Command(BaseCommand):
@@ -14,6 +15,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser: BaseCommand) -> None:
         parser.add_argument('D0010file', nargs='+', type=str)
 
+    @shared_task(bind=True, autoretry_for=(Exception,), retry_backoff=True, max_retries=3)
     def handle(self, *args, **options: dict) -> None:
         try:
         
