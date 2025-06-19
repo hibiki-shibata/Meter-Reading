@@ -20,8 +20,7 @@ class Command(BaseCommand):
             for D0010_file_path in options['D0010file']:  
                 import_meterread_file.delay(D0010_file_path)                            
 
-                self.stdout.write(self.style.SUCCESS(f"Successfully imported {D0010_file_path}"))
-
+                self.stdout.write(self.style.SUCCESS(f"Successfully imported - file is being processed{D0010_file_path}"))
 
         except Exception as e:
             self.stdout.write(self.style.ERROR(f"An unexpected error occurred: {str(e)}"))
