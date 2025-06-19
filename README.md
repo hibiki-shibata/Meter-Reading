@@ -55,16 +55,16 @@ python3 manage.py migrate
 ### 3. 🥦 Start Celery worker
 
 Start Redis
-'''
+```
  docker run --name krakenRedis -d \
  -p 6379:6379 \
  -v redisdata:/var/lib/redis/data \
  redis
-'''
+```
 
-'''
+```
 celery -A server_config.celeryconfig worker --loglevel=info
-'''
+```
 
 
 ### 4. 📥 Import example D0010 Data File into the DB
