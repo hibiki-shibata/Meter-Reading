@@ -6,7 +6,6 @@
 
 from django.core.management.base import BaseCommand
 from apps.meterData_handler_app.tasks import import_meterread_file
-from celery import shared_task
 
 
 class Command(BaseCommand):
