@@ -26,7 +26,7 @@ class MeterDataHandlerView(generics.GenericAPIView, ListModelMixin, CreateModelM
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
-        
+
         
 class MeterFileCreateView(APIView):
 
@@ -36,8 +36,9 @@ class MeterFileCreateView(APIView):
             if not file:
                 return Response({"error": "No file provided"}, status=status.HTTP_400_BAD_REQUEST)
                         
-            d0010_importer(request.FILES["file"].read().decode('utf-8'), file.name)
-            return Response({"message": "File is being processed"}, status=status.HTTP_202_ACCEPTED)
+            if file.name.srtendswith('d0010'):
+                d0010_importer(request.FILES["file"].read().decode('utf-8'), file.name)
+                return Response({"message": "File is being processed"}, status=status.HTTP_202_ACCEPTED)
 
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
