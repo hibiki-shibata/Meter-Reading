@@ -9,3 +9,6 @@ class MeterReading(models.Model):
     reading_date = models.DateField()
     reading_value = models.DecimalField(max_digits=10, decimal_places=1)
     file_name = models.CharField(max_length=100) 
+
+    class Meta:
+        unique_together = ('mpan', 'register_id', 'reading_date') # Ensure unique readings for each MPAN, register, and date
