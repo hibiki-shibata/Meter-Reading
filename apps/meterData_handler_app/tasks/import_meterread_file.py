@@ -1,5 +1,5 @@
 from apps.meterData_handler_app.models.models import MeterReading
-from apps.meterData_handler_app.services.file_parser import parse_d0010
+from apps.meterData_handler_app.services.file_parser import parse_files
 from apps.meterData_handler_app.services.file_parser import MeterReadingData
 from celery import shared_task
 
@@ -10,7 +10,7 @@ reading: MeterReadingData
 def import_meterread_file(self, D0010_file_path):
     try:        
 
-                for reading in parse_d0010(D0010_file_path):
+                for reading in parse_files(D0010_file_path):
        
                     # Check if the reading already exists
                     if MeterReading.objects.filter(
