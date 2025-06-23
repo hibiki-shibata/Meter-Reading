@@ -5,7 +5,7 @@
 #         self.stdout.write("Hello, world!")
 
 from django.core.management.base import BaseCommand
-from apps.meterData_handler_app.tasks import import_meterread_file
+from apps.meterData_handler_app.tasks.file_reader import file_reader
 
 
 class Command(BaseCommand):
@@ -19,7 +19,7 @@ class Command(BaseCommand):
         try:
         
             for D0010_file_path in options['D0010file']:  
-                import_meterread_file.delay(D0010_file_path)                            
+                file_reader.delay(D0010_file_path)                            
 
                 self.stdout.write(self.style.SUCCESS(f"Successfully imported - file is being processed{D0010_file_path}"))
 

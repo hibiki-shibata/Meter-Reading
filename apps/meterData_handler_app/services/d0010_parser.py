@@ -10,14 +10,12 @@ class MeterReadingData:
     reading_date: datetime
  
 
-
-def d0010_handler(D0010_data: dict, file_name: str) -> Generator[dict, None, None]:
+def d0010_parser(D0010_data: dict, file_name: str) -> Generator[dict, None, None]:
             ignored_lines: set = {"ZHV", "ZPT"}
             
             expect026: bool = True
             expect028: bool = False
             expect030: bool = False
-
 
             for row in D0010_data:
                 if row[0] in ignored_lines:

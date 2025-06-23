@@ -1,1 +1,1 @@
-from .import_meterread_file import import_meterread_file
+from .file_reader import file_reader

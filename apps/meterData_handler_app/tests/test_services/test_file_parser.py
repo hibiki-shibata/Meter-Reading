@@ -3,7 +3,7 @@ from pathlib import Path
 
 from datetime import date
 from django.test import TestCase
-from apps.meterData_handler_app.services.file_parser import parse_d0010
+from apps.meterData_handler_app.services.d0010_importer import parse_d0010
 
 
 class ParseD0010TestCase(TestCase):
