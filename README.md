@@ -1,4 +1,6 @@
-# ⚡ Kraken Meter Data Import Tool
+[System Requirements' Doc](https://docs.google.com/document/d/14appPfkpGbBgrqQJa18QWLFbuWjwGnsg4WOUAMsJIOk/edit?tab=t.0#heading=h.3hiuxlvuqmw)
+
+# ⚡ Kraken Meter Data Import Tool 
 
 A Django-based tool to import and manage electricity meter data (D0010 flow files), using PostgreSQL and Docker for infrastructure.
 

@@ -22,6 +22,11 @@ class MeterReading(models.Model):
         unique_together = [('register', 'reading_date')]
 
 
+# MeterReading.objects.filter(
+#     register__meter__mpan="...",
+#     register__meter__serial_number="..."
+# )
+
 
 
 # # D0010 model: D0010 data doc => https://www.electralink.co.uk/data-catalogues/dtc-catalogue/
