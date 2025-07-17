@@ -1,6 +1,6 @@
 [System Requirements' Doc](https://docs.google.com/document/d/14appPfkpGbBgrqQJa18QWLFbuWjwGnsg4WOUAMsJIOk/edit?tab=t.0#heading=h.3hiuxlvuqmw)
 
-# ⚡ Kraken Meter Data Import Tool 
+# ⚡ Meter Data Import Tool 
 
 A Django-based tool to import and manage electricity meter data (D0010 flow files), using PostgreSQL and Docker for infrastructure.
 
@@ -29,7 +29,7 @@ docker run -p 5432:5432 -d \
 
 ### 2. ⚙️ Set Up Django Project (Recommended Python ver: 3.13.3)
 
-~ Run these commands under KrakenProject/ directories ~
+~ Run these commands under Meter-Reading/ directories ~
 
 (Optional: Recommended)
 ```
@@ -112,7 +112,7 @@ python3 manage.py test
 📁 Project Structure
 
 ```
-KrakenProject/
+Meter-Reading/
 ├── apps/
 │   └── meterData_handler_app/
 │       ├── admin.py # Admin site config
